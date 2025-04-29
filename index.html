@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disable Enhanced Tracking Protection</title>
+
+  <script src="https://www.zigram.tech/wp-content/themes/ZIGRAM/assets/bootstrap/js/jquery.min.js"></script>
+  <script src="https://www.zigram.tech/wp-content/themes/ZIGRAM/assets/keycloak/js/keycloak.min.js"></script>
+
+  <style>
+    #permissionPopup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+    }
+    #permissionPopup button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #permissionPopup button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="permissionPopup">
+    <h2>Attention User</h2>
+    <p>To use Zigram.tech fully, please disable Enhanced Tracking Protection (ETP) in Firefox.</p>
+    <p><strong>Steps:</strong></p>
+    <ul>
+      <li>Click the shield icon <img src="https://assets-prod.sumo.prod.webservices.mozgcp.net/media/uploads/gallery/images/2021-05-06-05-12-06-f2679d.png" width="20"></li>
+      <li>Toggle off "Enhanced Tracking Protection" switch.</li>
+      <li>Click "Turn off Blocking for This Site."</li>
+    </ul>
+    <button onclick="closePopup()">Got it!</button>
+  </div>
+
+  <h1>Welcome to Zigram.tech</h1>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Check if Keycloak script is loaded
+      if (typeof Keycloak === 'undefined') {
+        console.error('Keycloak script is not loaded.');
+        // return;
+      }
+
+      const keycloak = new Keycloak({
+        url: "https://sso.dev.zigram.org/",
+        realm: "ZIGRAM",
+        clientId: "ZIGRAM-TECH-LOCAL",
+      });
+console.log(keycloak);
+
+      keycloak.init({
+        onLoad: "check-sso",
+        checkLoginIframe: false,
+        // silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+      }).then(function (authenticated) {
+        console.log(authenticated ? "Authenticated ✅" : "Not Authenticated 🚫");
+        if (!authenticated) {
+          // If not authenticated and browser is Firefox, show popup
+          if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            document.getElementById('permissionPopup').style.display = 'block';
+          }
+        }
+      }).catch(function (error) {
+        console.error('Keycloak init failed:', error);
+
+        // If initialization fails and browser is Firefox, show popup
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+          document.getElementById('permissionPopup').style.display = 'block';
+        }
+      });
+    });
+
+    function closePopup() {
+      document.getElementById('permissionPopup').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
