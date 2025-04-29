@@ -60,14 +60,14 @@
       const keycloak = new Keycloak({
         url: "https://sso.dev.zigram.org/",
         realm: "ZIGRAM",
-        clientId: "ZIGRAM-TECH",
+        clientId: "ZIGRAM-TECH-LOCAL",
       });
 console.log(keycloak);
 
       keycloak.init({
         onLoad: "check-sso",
-        checkLoginIframe: true,
-        // silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+        checkLoginIframe: false,
+        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
       }).then(function (authenticated) {
         console.log(authenticated ? "Authenticated ✅" : "Not Authenticated 🚫");
         if (!authenticated) {
