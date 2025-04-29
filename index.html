@@ -66,7 +66,7 @@ console.log(keycloak);
 
       keycloak.init({
         onLoad: "check-sso",
-        checkLoginIframe: false,
+        checkLoginIframe: true,
         // silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
       }).then(function (authenticated) {
         console.log(authenticated ? "Authenticated ✅" : "Not Authenticated 🚫");
